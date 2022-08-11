@@ -1,0 +1,43 @@
+create or replace view last_salary_change as select e.emp_no, max(s.from_date) FROM "public"."salaries" as s
+join "public"."employees" as e using(emp_no)
+join "public"."dept_emp" as de using(emp_no)
+join "public"."departments" as d using(dept_no)
+group by e.emp_no order by e.emp_no
+
+select * from "public"."salaries" join last_salary_change USING(emp_no)
+where from_date=max;
+
+
+
+SELECT
+  s.emp_no,
+  s.salary as"most recent salary",
+  from_date
+FROM
+  "public"."salaries"as s
+WHERE from_date =
+(
+    SELECT
+      max( from_date )
+    FROM
+      salaries as sp
+    WHERE sp.emp_no = s.emp_no
+)
+ORDER BY emp_no asc
+O metodă mai bună
+SELECT
+  s.emp_no,
+  s.salary as "most recent salary",
+  from_date
+FROM
+  "public"."salaries" as s
+join
+(
+    SELECT
+      emp_no, max(from_date) as "max"
+    FROM
+      salaries as sp
+    group by emp_no
+) as ls using (emp_no)
+where ls.max=from_date
+ORDER BY emp_no asc;

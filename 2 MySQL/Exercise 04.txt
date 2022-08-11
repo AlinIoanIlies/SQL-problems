@@ -1,0 +1,3 @@
+/*Retrieve a list of all employees that have been hired in 2000.*/
+
+select * from employees where hire_date like '2000%';

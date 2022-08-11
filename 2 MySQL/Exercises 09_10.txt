@@ -1,0 +1,55 @@
+/*Define a function that retrieves the largest contract salary value of an employee. Apply it to employee number 11356.
+In addition, what is the lowest contract salary value of the same employee? You may want to create a new function that to obtain the result.*/
+
+drop function if exists min_salary;
+DELIMITER $$
+create function min_salary(param_emp_no integer) returns decimal(10,0)
+deterministic
+BEGIN
+declare v_salary decimal(10,0);
+SELECT 
+    ROUND(min(salary), 0) as min_salary
+INTO v_salary from salaries where emp_no=param_emp_no;
+return v_salary;
+END$$
+DELIMITER ;
+select min_salary(11356);
+
+drop function if exists max_salary;
+DELIMITER $$
+create function max_salary(param_emp_no integer) returns decimal(10,0)
+deterministic
+BEGIN
+declare v_salary decimal(10,0);
+SELECT 
+    ROUND(max(salary), 0) as max_salary
+INTO v_salary from salaries where emp_no=param_emp_no;
+return v_salary;
+END$$
+DELIMITER ;
+select max_salary(11356);
+
+/*Based on the previous exercise, you can now try to create a third function that also accepts a second parameter. 
+Let this parameter be a character sequence. Evaluate if its value is 'min' or 'max' and based on that retrieve either the lowest or the highest salary, respectively 
+(using the same logic and code structure from Exercise 9). 
+If the inserted value is any string value different from ‘min’ or ‘max’, let the function return the difference between the highest and the lowest salary of that employee.*/
+
+drop function if exists emp_salary;
+DELIMITER $$
+create function emp_salary(param_emp_no integer, choice char(3)) returns decimal(10,0)
+deterministic
+BEGIN
+declare v_salary decimal(10,0);
+if choice='min' then
+select min_salary(param_emp_no) as min_salary INTO v_salary;
+end if;
+if choice='max' then
+select max_salary(param_emp_no) as max_salary INTO v_salary;
+end if;
+if choice <> 'min' and choice<>'max' then
+select max(salary)-min(salary) as difference from salaries where emp_no=param_emp_no INTO v_salary;
+end if;
+return v_salary;
+END $$
+DELIMITER ;
+select emp_salary(11356,'abc');

@@ -1,0 +1,4 @@
+/*How many contracts have been registered in the ‘salaries’ table with duration of more than one year and of value higher than or equal to $100,000?
+Hint: You may wish to compare the difference between the start and end date of the salaries contracts.*/
+
+select count(*) from salaries where salary >=100000 and to_seconds(to_date)-to_seconds(from_date)>=365*86400;

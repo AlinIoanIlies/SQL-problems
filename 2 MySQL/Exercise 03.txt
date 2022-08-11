@@ -1,0 +1,13 @@
+/*Obtain a table containing the following three fields for all individuals whose employee number is not greater than 10040:
+- employee number
+- the lowest department number among the departments where the employee has worked in (Hint: use a subquery to retrieve this value from the 'dept_emp' table)
+- assign '110022' as 'manager' to all individuals whose employee number is lower than or equal to 10020, and '110039' to those whose number is between 10021 and 10040 inclusive.
+Use a CASE statement to create the third field.*/
+
+select e.emp_no , min(de.dept_no) as dept_no, 
+case when e.emp_no <=10020 then 110022 else 110039 end as manager
+from employees as e
+inner join dept_emp as de on de.emp_no=e.emp_no
+where e.emp_no <= 10040
+group by e.emp_no, manager
+order by e.emp_no;

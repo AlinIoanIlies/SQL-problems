@@ -1,0 +1,16 @@
+/*Create a procedure that asks you to insert an employee number and that will obtain an output containing the same number, 
+as well as the number and name of the last department the employee has worked in.
+Finally, call the procedure for employee number 10010.
+If you've worked correctly, you should see that employee number 10010 has worked for department number 6 - "Quality Management".*/
+
+drop procedure if exists latest_department;
+DELIMITER $$
+create procedure latest_department(in param_emp_no integer)
+BEGIN
+select e.emp_no, de.dept_no, dep.dept_name from employees as e
+inner join dept_emp as de using(emp_no)
+inner join departments as dep using(dept_no)
+where de.to_date = '9999-01-01' and e.emp_no=param_emp_no;
+END$$
+DELIMITER ;
+call employees.latest_department(10010);
